@@ -44,13 +44,18 @@ init =
 
 
 type Msg
-    = NoOp
+    = Input
+    | Search
+    | SelectVideo
+    | LikeVideo
+    | DislikeVideo
+    | Comment
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
+        _ ->
             ( model, Cmd.none )
 
 
