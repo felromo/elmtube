@@ -1,9 +1,9 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Html exposing (..)
+import Html.Events exposing (..)
 
 
--- import Html.Events exposing (..)
 -- import Http
 -- import Json.Decode as Decode
 -- import Html.Attributes exposing (..)
@@ -72,8 +72,25 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Search ->
+            ( model, searchQuery "raise cain" )
+
         _ ->
             ( model, Cmd.none )
+
+
+
+-- port to send the search query to javascript
+
+
+port searchQuery : String -> Cmd msg
+
+
+
+-- port to listen for the results of the query
+
+
+port searchResults : (List String -> msg) -> Sub msg
 
 
 
@@ -92,4 +109,9 @@ subscriptions model =
 view : Model -> Html.Html Msg
 view model =
     div []
-        [ text "placeholder" ]
+        [ button [ onClick Search ] [ text "test" ] ]
+
+
+apiKey : String
+apiKey =
+    "AIzaSyAVYprfgQ03PuwwwKLNVdh6KJr2Me9XLYM"
