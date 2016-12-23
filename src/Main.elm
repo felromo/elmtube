@@ -1,9 +1,11 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Events exposing (..)
 
 
+-- import Html.Events exposing (..)
+-- import Http
+-- import Json.Decode as Decode
 -- import Html.Attributes exposing (..)
 
 
@@ -24,19 +26,34 @@ type alias Model =
     { input : String
     , searchTerm : String
     , searchReturn : List Video
-    , activeVideo : Video
+    , activeVideo : ActiveVideo
     }
 
 
 type alias Video =
     { id : String
-    , name : String
+    , description : String
+    , likes : Int
+    , dislikes : Int
+    }
+
+
+type alias ActiveVideo =
+    { video : Video
+    , comments : List String
+    , related : List Video
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" "" [] { id = "", name = "" }, Cmd.none )
+    ( { input = ""
+      , searchTerm = ""
+      , searchReturn = []
+      , activeVideo = (ActiveVideo (Video "" "" 0 0) [] [])
+      }
+    , Cmd.none
+    )
 
 
 
