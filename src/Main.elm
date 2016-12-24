@@ -1,9 +1,10 @@
 port module Main exposing (..)
 
-import Html exposing (..)
+import Html exposing (div, ul, li, button, text)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode
+import List exposing (map)
 
 
 -- import Html.Attributes exposing (..)
@@ -28,7 +29,7 @@ type alias Model =
     , searchTerm : String
     , searchReturn : List Video
     , activeVideo : ActiveVideo
-    , display : TopLevel
+    , page : Page
     }
 
 
@@ -53,7 +54,7 @@ init =
       , searchTerm = ""
       , searchReturn = []
       , activeVideo = (ActiveVideo (Video "" "" 0 0) [] [])
-      , display = TopLevel "" []
+      , page = Page "" []
       }
     , Cmd.none
     )
@@ -71,7 +72,7 @@ type Msg
     | LikeVideo
     | DislikeVideo
     | Comment
-    | Display (Result Http.Error TopLevel)
+    | Display (Result Http.Error Page)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,8 +84,8 @@ update msg model =
         SearchNative ->
             ( model, searchVideo )
 
-        Display (Ok something) ->
-            { model | display = something } ! []
+        Display (Ok receivedPage) ->
+            { model | page = receivedPage } ! []
 
         _ ->
             ( model, Cmd.none )
@@ -122,7 +123,14 @@ view model =
     div []
         [ button [ onClick Search ] [ text "Interop" ]
         , button [ onClick SearchNative ] [ text "Native" ]
+        , ul [] <| map (\item -> li [] [ text item.details.description ]) model.page.items
         ]
+
+
+
+-- listOfLi-- s : Model -> Html.Html Msg
+-- listOfLis model =
+--     map (
 
 
 apiKey : String
@@ -158,7 +166,7 @@ searchVideo =
         Http.send Display <| Http.get url getNextPageToken
 
 
-type alias TopLevel =
+type alias Page =
     { nextPageToken : String
     , items : List VideoRaw
     }
@@ -193,9 +201,9 @@ type alias Thumbnail =
 --     Decode.at [ "id", "videoId" ] Decode.string
 
 
-getNextPageToken : Decode.Decoder TopLevel
+getNextPageToken : Decode.Decoder Page
 getNextPageToken =
-    Decode.map2 TopLevel
+    Decode.map2 Page
         (Decode.field "nextPageToken" Decode.string)
         (Decode.field "items" (Decode.list getVideoRaw))
 
