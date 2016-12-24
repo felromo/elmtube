@@ -6,9 +6,12 @@ import Html.Events exposing (onClick, onSubmit, onInput)
 import Http
 import Json.Decode as Decode
 import List exposing (map, head)
+import MyCss
+import Html.CssHelpers
 
 
--- import Html.Attributes exposing (..)
+{ id, class, classList } =
+    Html.CssHelpers.withNamespace "base"
 
 
 main : Program Never Model Msg
