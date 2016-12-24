@@ -1,6 +1,6 @@
 port module Main exposing (..)
 
-import Html exposing (div, ul, li, button, text, h3, hr, iframe)
+import Html exposing (div, ul, li, button, text, h3, hr, iframe, h1)
 import Html.Events exposing (..)
 import Html.Attributes exposing (src)
 import Http
@@ -129,6 +129,7 @@ view model =
             , button [ onClick SearchNative ] [ text "Native" ]
             , hr [] []
             ]
+        , h1 [] [ text "Elmtube" ]
         , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
         , ul [] <| map (\item -> li [] [ text item.details.title ]) model.page.items
         ]
@@ -146,12 +147,6 @@ firstVideo model =
 
             Nothing ->
                 ""
-
-
-
--- listOfLi-- s : Model -> Html.Html Msg
--- listOfLis model =
---     map (
 
 
 apiKey : String
