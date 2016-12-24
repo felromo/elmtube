@@ -1,10 +1,11 @@
 port module Main exposing (..)
 
-import Html exposing (div, ul, li, button, text, h3, hr)
+import Html exposing (div, ul, li, button, text, h3, hr, iframe)
 import Html.Events exposing (..)
+import Html.Attributes exposing (src)
 import Http
 import Json.Decode as Decode
-import List exposing (map)
+import List exposing (map, head)
 
 
 -- import Html.Attributes exposing (..)
@@ -128,8 +129,23 @@ view model =
             , button [ onClick SearchNative ] [ text "Native" ]
             , hr [] []
             ]
+        , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
         , ul [] <| map (\item -> li [] [ text item.details.title ]) model.page.items
         ]
+
+
+firstVideo : Model -> String
+firstVideo model =
+    let
+        first =
+            (head model.page.items)
+    in
+        case first of
+            Just value ->
+                value.videoId
+
+            Nothing ->
+                ""
 
 
 
