@@ -57,7 +57,7 @@ init =
       , activeVideo = (ActiveVideo (Video "" "" 0 0) [] [])
       , page = Page "" []
       }
-    , Cmd.none
+    , searchVideo "elm"
     )
 
 
