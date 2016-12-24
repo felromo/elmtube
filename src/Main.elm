@@ -9,6 +9,7 @@ import Json.Decode as Decode
 -- import Html.Attributes exposing (..)
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
@@ -159,7 +160,27 @@ searchVideo =
 
 type alias TopLevel =
     { nextPageToken : String
-    , items : List String
+    , items : List VideoRaw
+    }
+
+
+type alias VideoRaw =
+    { videoId : String
+    , details : VideoDetails
+    }
+
+
+type alias VideoDetails =
+    { title : String
+    , description : String
+    , thumbnails : Thumbnail
+    }
+
+
+type alias Thumbnail =
+    { url : String
+    , width : Int
+    , height : Int
     }
 
 
@@ -167,14 +188,36 @@ type alias TopLevel =
 -- getNextPageToken : Decode.Decoder String
 -- getNextPageToken =
 --     Decode.field "nextPageToken" Decode.string
+-- getId : Decode.Decoder String
+-- getId =
+--     Decode.at [ "id", "videoId" ] Decode.string
 
 
 getNextPageToken : Decode.Decoder TopLevel
 getNextPageToken =
     Decode.map2 TopLevel
         (Decode.field "nextPageToken" Decode.string)
-        (Decode.field "items" (Decode.list getId))
+        (Decode.field "items" (Decode.list getVideoRaw))
 
 
-getId =
-    Decode.at [ "id", "videoId" ] Decode.string
+getVideoRaw : Decode.Decoder VideoRaw
+getVideoRaw =
+    Decode.map2 VideoRaw
+        (Decode.at [ "id", "videoId" ] Decode.string)
+        (Decode.field "snippet" getVideoDetails)
+
+
+getVideoDetails : Decode.Decoder VideoDetails
+getVideoDetails =
+    Decode.map3 VideoDetails
+        (Decode.field "title" Decode.string)
+        (Decode.field "description" Decode.string)
+        (Decode.field "thumbnails" getThumbnails)
+
+
+getThumbnails : Decode.Decoder Thumbnail
+getThumbnails =
+    Decode.map3 Thumbnail
+        (Decode.at [ "default", "url" ] Decode.string)
+        (Decode.at [ "default", "width" ] Decode.int)
+        (Decode.at [ "default", "height" ] Decode.int)
