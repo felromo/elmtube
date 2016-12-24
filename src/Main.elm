@@ -1,6 +1,6 @@
 port module Main exposing (..)
 
-import Html exposing (div, ul, li, button, text)
+import Html exposing (div, ul, li, button, text, h3, hr)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode
@@ -121,9 +121,14 @@ subscriptions model =
 view : Model -> Html.Html Msg
 view model =
     div []
-        [ button [ onClick Search ] [ text "Interop" ]
-        , button [ onClick SearchNative ] [ text "Native" ]
-        , ul [] <| map (\item -> li [] [ text item.details.description ]) model.page.items
+        [ div
+            []
+            [ h3 [] [ text "Debug Menu" ]
+            , button [ onClick Search ] [ text "Interop" ]
+            , button [ onClick SearchNative ] [ text "Native" ]
+            , hr [] []
+            ]
+        , ul [] <| map (\item -> li [] [ text item.details.title ]) model.page.items
         ]
 
 
