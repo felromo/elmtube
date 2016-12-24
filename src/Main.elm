@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
-import Html exposing (div, ul, li, button, text, h3, hr, iframe, h1)
-import Html.Events exposing (..)
-import Html.Attributes exposing (src)
+import Html exposing (div, ul, li, button, text, h3, hr, iframe, h1, input, form, Attribute)
+import Html.Events exposing (onClick, onSubmit)
+import Html.Attributes exposing (src, type_)
 import Http
 import Json.Decode as Decode
 import List exposing (map, head)
@@ -80,7 +80,8 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Search ->
-            ( model, searchQuery "raise cain" )
+            -- ( model, searchQuery "raise cain" )
+            ( model, searchVideo )
 
         SearchNative ->
             ( model, searchVideo )
@@ -130,6 +131,10 @@ view model =
             , hr [] []
             ]
         , h1 [] [ text "Elmtube" ]
+        , form [ onSubmit Search ]
+            [ input [ type_ "text" ] []
+            , button [ type_ "submit" ] [ text "Search" ]
+            ]
         , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
         , ul [] <| map (\item -> li [] [ text item.details.title ]) model.page.items
         ]
