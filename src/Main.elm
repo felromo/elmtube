@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Html exposing (div, ul, li, button, text, hr, iframe, h1, h3, h5, input, form, Attribute, img, p)
-import Html.Attributes exposing (src, type_)
+import Html.Attributes exposing (src, type_, value)
 import Html.Events exposing (onClick, onSubmit, onInput)
 import Http
 import Json.Decode as Decode
@@ -84,7 +84,7 @@ update msg model =
 
         Search ->
             -- ( model, searchQuery "raise cain" )
-            ( model, searchVideo model.input )
+            ( { model | input = "" }, searchVideo model.input )
 
         SearchNative ->
             ( model, searchVideo "raise cain" )
@@ -138,6 +138,7 @@ view model =
             [ input
                 [ type_ "text"
                 , onInput Input
+                , value model.input
                 ]
                 []
             , button [ type_ "submit" ] [ text "Search" ]
