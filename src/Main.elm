@@ -2,10 +2,10 @@ port module Main exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (..)
+import Http
+import Json.Decode as Decode
 
 
--- import Http
--- import Json.Decode as Decode
 -- import Html.Attributes exposing (..)
 
 
@@ -27,6 +27,7 @@ type alias Model =
     , searchTerm : String
     , searchReturn : List Video
     , activeVideo : ActiveVideo
+    , display : TopLevel
     }
 
 
@@ -51,6 +52,7 @@ init =
       , searchTerm = ""
       , searchReturn = []
       , activeVideo = (ActiveVideo (Video "" "" 0 0) [] [])
+      , display = TopLevel "" []
       }
     , Cmd.none
     )
@@ -63,10 +65,12 @@ init =
 type Msg
     = Input
     | Search
+    | SearchNative
     | SelectVideo
     | LikeVideo
     | DislikeVideo
     | Comment
+    | Display (Result Http.Error TopLevel)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -74,6 +78,12 @@ update msg model =
     case msg of
         Search ->
             ( model, searchQuery "raise cain" )
+
+        SearchNative ->
+            ( model, searchVideo )
+
+        Display (Ok something) ->
+            { model | display = something } ! []
 
         _ ->
             ( model, Cmd.none )
@@ -109,9 +119,62 @@ subscriptions model =
 view : Model -> Html.Html Msg
 view model =
     div []
-        [ button [ onClick Search ] [ text "test" ] ]
+        [ button [ onClick Search ] [ text "Interop" ]
+        , button [ onClick SearchNative ] [ text "Native" ]
+        ]
 
 
 apiKey : String
 apiKey =
     "AIzaSyAVYprfgQ03PuwwwKLNVdh6KJr2Me9XLYM"
+
+
+constructUrl : String -> String -> String
+constructUrl query apiKey =
+    let
+        keyParam =
+            "key=" ++ apiKey
+
+        queryParam =
+            "&q=" ++ query
+
+        partParam =
+            -- this one is preset, but change here if desired
+            "&part=" ++ "snippet"
+
+        typeParam =
+            "&type=" ++ "video"
+    in
+        "https://www.googleapis.com/youtube/v3/search?" ++ keyParam ++ queryParam ++ partParam ++ typeParam
+
+
+searchVideo : Cmd Msg
+searchVideo =
+    let
+        url =
+            constructUrl "raise cain" apiKey
+    in
+        Http.send Display <| Http.get url getNextPageToken
+
+
+type alias TopLevel =
+    { nextPageToken : String
+    , items : List String
+    }
+
+
+
+-- getNextPageToken : Decode.Decoder String
+-- getNextPageToken =
+--     Decode.field "nextPageToken" Decode.string
+
+
+getNextPageToken : Decode.Decoder TopLevel
+getNextPageToken =
+    Decode.map2 TopLevel
+        (Decode.field "nextPageToken" Decode.string)
+        (Decode.field "items" (Decode.list getId))
+
+
+getId =
+    Decode.at [ "id", "videoId" ] Decode.string
