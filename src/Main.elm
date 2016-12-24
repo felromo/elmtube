@@ -1,7 +1,7 @@
 port module Main exposing (..)
 
 import Html exposing (div, ul, li, button, text, h3, hr, iframe, h1, input, form, Attribute)
-import Html.Events exposing (onClick, onSubmit)
+import Html.Events exposing (onClick, onSubmit, onInput)
 import Html.Attributes exposing (src, type_)
 import Http
 import Json.Decode as Decode
@@ -66,7 +66,7 @@ init =
 
 
 type Msg
-    = Input
+    = Input String
     | Search
     | SearchNative
     | SelectVideo
@@ -79,12 +79,15 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Input searchInput ->
+            { model | input = searchInput } ! []
+
         Search ->
             -- ( model, searchQuery "raise cain" )
-            ( model, searchVideo )
+            ( model, searchVideo model.input )
 
         SearchNative ->
-            ( model, searchVideo )
+            ( model, searchVideo "raise cain" )
 
         Display (Ok receivedPage) ->
             { model | page = receivedPage } ! []
@@ -132,7 +135,11 @@ view model =
             ]
         , h1 [] [ text "Elmtube" ]
         , form [ onSubmit Search ]
-            [ input [ type_ "text" ] []
+            [ input
+                [ type_ "text"
+                , onInput Input
+                ]
+                []
             , button [ type_ "submit" ] [ text "Search" ]
             ]
         , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
@@ -178,11 +185,11 @@ constructUrl query apiKey =
         "https://www.googleapis.com/youtube/v3/search?" ++ keyParam ++ queryParam ++ partParam ++ typeParam
 
 
-searchVideo : Cmd Msg
-searchVideo =
+searchVideo : String -> Cmd Msg
+searchVideo query =
     let
         url =
-            constructUrl "raise cain" apiKey
+            constructUrl query apiKey
     in
         Http.send Display <| Http.get url getNextPageToken
 
