@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
-import Html exposing (div, ul, li, button, text, h3, hr, iframe, h1, input, form, Attribute)
-import Html.Events exposing (onClick, onSubmit, onInput)
+import Html exposing (div, ul, li, button, text, hr, iframe, h1, h3, h5, input, form, Attribute, img, p)
 import Html.Attributes exposing (src, type_)
+import Html.Events exposing (onClick, onSubmit, onInput)
 import Http
 import Json.Decode as Decode
 import List exposing (map, head)
@@ -143,7 +143,16 @@ view model =
             , button [ type_ "submit" ] [ text "Search" ]
             ]
         , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
-        , ul [] <| map (\item -> li [] [ text item.details.title ]) model.page.items
+        , ul [] <| map (\item -> relatedVideoView item) model.page.items
+        ]
+
+
+relatedVideoView : VideoRaw -> Html.Html Msg
+relatedVideoView video =
+    li []
+        [ h5 [] [ text video.details.title ]
+        , img [ src video.details.thumbnails.url ] []
+        , p [] [ text video.details.description ]
         ]
 
 
