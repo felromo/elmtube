@@ -128,27 +128,30 @@ subscriptions model =
 
 view : Model -> Html.Html Msg
 view model =
-    div []
-        [ div
-            []
-            [ h3 [] [ text "Debug Menu" ]
-            , button [ onClick Search ] [ text "Interop" ]
-            , button [ onClick SearchNative ] [ text "Native" ]
-            , hr [] []
-            ]
-        , h1 [] [ text "Elmtube" ]
-        , form [ onSubmit Search ]
-            [ input
-                [ type_ "text"
-                , onInput Input
-                , value model.input
-                ]
-                []
-            , button [ type_ "submit" ] [ text "Search" ]
-            ]
-        , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
-        , ul [] <| map (\item -> relatedVideoView item) model.page.items
+    div [ id [ MyCss.Wrap ] ]
+        [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
+        , div [ id [ MyCss.Nav ] ] []
+        , div [ id [ MyCss.Main ] ] [ h3 [] [ text "Column 1" ] ]
+        , div [ id [ MyCss.SideBar ] ] [ h3 [] [ text "Column 2" ] ]
+        , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
+
+
+
+-- div [ id [ MyCss.Wrap ] ]
+--     [ h1 [] [ text "Elmtube" ]
+--     , form [ onSubmit Search ]
+--         [ input
+--             [ type_ "text"
+--             , onInput Input
+--             , value model.input
+--             ]
+--             []
+--         , button [ type_ "submit" ] [ text "Search" ]
+--         ]
+--     , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
+--     , ul [] <| map (\item -> relatedVideoView item) model.page.items
+--     ]
 
 
 relatedVideoView : VideoRaw -> Html.Html Msg

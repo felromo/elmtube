@@ -1,3 +1,47 @@
 body {
-    background-color: #a8a2a2;
+    background-color: #a7a09a;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+html {
+    background-color: #a7a09a;
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+#Wrap {
+    width: 750px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    background-color: #99c;
+}
+
+#Header {
+    background-color: #ddd;
+}
+
+#Nav {
+    background-color: #c99;
+}
+
+#Main {
+    background-color: #9c9;
+    float: left;
+    width: 500px;
+}
+
+#SideBar {
+    background-color: #c9c;
+    float: right;
+    width: 250px;
+}
+
+#Footer {
+    clear: both;
+    background-color: #cc9;
 }
