@@ -39,9 +39,11 @@ type alias Model =
 
 type alias Video =
     { id : String
+    , title : String
     , description : String
     , likes : Int
     , dislikes : Int
+    , thumbnail : Thumbnail
     }
 
 
@@ -57,7 +59,7 @@ init =
     ( { input = ""
       , searchTerm = ""
       , searchReturn = []
-      , activeVideo = (ActiveVideo (Video "" "" 0 0) [] [])
+      , activeVideo = (ActiveVideo (Video "" "" "" 0 0 (Thumbnail "" 0 0)) [] [])
       , page = Page "" []
       }
     , searchVideo "elm"
@@ -126,12 +128,17 @@ subscriptions model =
 -- VIEW
 
 
+placeholderVideo : Video
+placeholderVideo =
+    Video "" "Loading.." "Loading.." 0 0 (Thumbnail "" 0 0)
+
+
 view : Model -> Html.Html Msg
 view model =
     div [ id [ MyCss.Wrap ] ]
         [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
-        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo model ] ]
+        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo <| composeVideo <| head model.page.items ] ]
         , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
@@ -150,37 +157,21 @@ searchBar model =
         ]
 
 
-activeVideo : Model -> Html.Html Msg
-activeVideo model =
+activeVideo : Video -> Html.Html Msg
+activeVideo video =
     div [ class [ MyCss.ActiveVideo ] ]
         [ iframe
             [ class [ MyCss.VideoFrame ]
-            , src ("https://www.youtube.com/embed/" ++ (firstVideo model))
+            , src ("https://www.youtube.com/embed/" ++ video.id)
             ]
             []
+        , h3 [ class [ MyCss.VideoTitle ] ] [ text video.title ]
         ]
 
 
 relatedVideos : Model -> Html.Html Msg
 relatedVideos model =
     ul [] <| map (\item -> relatedVideoView item) model.page.items
-
-
-
--- div [ id [ MyCss.Wrap ] ]
---     [ h1 [] [ text "Elmtube" ]
---     , form [ onSubmit Search ]
---         [ input
---             [ type_ "text"
---             , onInput Input
---             , value model.input
---             ]
---             []
---         , button [ type_ "submit" ] [ text "Search" ]
---         ]
---     , iframe [ src ("https://www.youtube.com/embed/" ++ (firstVideo model)) ] []
---     , ul [] <| map (\item -> relatedVideoView item) model.page.items
---     ]
 
 
 relatedVideoView : VideoRaw -> Html.Html Msg
@@ -192,8 +183,8 @@ relatedVideoView video =
         ]
 
 
-firstVideo : Model -> String
-firstVideo model =
+firstVideoId : Model -> String
+firstVideoId model =
     let
         first =
             (head model.page.items)
@@ -204,6 +195,20 @@ firstVideo model =
 
             Nothing ->
                 ""
+
+
+composeVideo : Maybe VideoRaw -> Video
+composeVideo videoRaw =
+    case videoRaw of
+        Just { videoId, details } ->
+            let
+                { title, description, thumbnails } =
+                    details
+            in
+                Video videoId title description 0 0 thumbnails
+
+        Nothing ->
+            placeholderVideo
 
 
 apiKey : String
@@ -236,7 +241,7 @@ searchVideo query =
         url =
             constructUrl query apiKey
     in
-        Http.send Display <| Http.get url getNextPageToken
+        Http.send Display <| Http.get url fetchNextPageToken
 
 
 type alias Page =
@@ -265,39 +270,30 @@ type alias Thumbnail =
     }
 
 
-
--- getNextPageToken : Decode.Decoder String
--- getNextPageToken =
---     Decode.field "nextPageToken" Decode.string
--- getId : Decode.Decoder String
--- getId =
---     Decode.at [ "id", "videoId" ] Decode.string
-
-
-getNextPageToken : Decode.Decoder Page
-getNextPageToken =
+fetchNextPageToken : Decode.Decoder Page
+fetchNextPageToken =
     Decode.map2 Page
         (Decode.field "nextPageToken" Decode.string)
-        (Decode.field "items" (Decode.list getVideoRaw))
+        (Decode.field "items" (Decode.list fetchVideoRaw))
 
 
-getVideoRaw : Decode.Decoder VideoRaw
-getVideoRaw =
+fetchVideoRaw : Decode.Decoder VideoRaw
+fetchVideoRaw =
     Decode.map2 VideoRaw
         (Decode.at [ "id", "videoId" ] Decode.string)
-        (Decode.field "snippet" getVideoDetails)
+        (Decode.field "snippet" fetchVideoDetails)
 
 
-getVideoDetails : Decode.Decoder VideoDetails
-getVideoDetails =
+fetchVideoDetails : Decode.Decoder VideoDetails
+fetchVideoDetails =
     Decode.map3 VideoDetails
         (Decode.field "title" Decode.string)
         (Decode.field "description" Decode.string)
-        (Decode.field "thumbnails" getThumbnails)
+        (Decode.field "thumbnails" fetchThumbnails)
 
 
-getThumbnails : Decode.Decoder Thumbnail
-getThumbnails =
+fetchThumbnails : Decode.Decoder Thumbnail
+fetchThumbnails =
     Decode.map3 Thumbnail
         (Decode.at [ "default", "url" ] Decode.string)
         (Decode.at [ "default", "width" ] Decode.int)
