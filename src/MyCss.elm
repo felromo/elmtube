@@ -10,6 +10,7 @@ type CssClasses
     | ActiveVideo
     | VideoFrame
     | VideoTitle
+    | VideoDescription
 
 
 type CssIds
@@ -73,5 +74,7 @@ css =
             , width (pct 98)
             ]
         , (.) VideoTitle
+            [ textAlign left ]
+        , (.) VideoDescription
             [ textAlign left ]
         ]

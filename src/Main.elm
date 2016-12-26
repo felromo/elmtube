@@ -166,6 +166,7 @@ activeVideo video =
             ]
             []
         , h3 [ class [ MyCss.VideoTitle ] ] [ text video.title ]
+        , p [ class [ MyCss.VideoDescription ] ] [ text video.description ]
         ]
 
 
