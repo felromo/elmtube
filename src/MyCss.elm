@@ -9,6 +9,7 @@ type CssClasses
     = NavBar
     | ActiveVideo
     | VideoFrame
+    | VideoTitle
 
 
 type CssIds
@@ -71,4 +72,6 @@ css =
             [ height (Css.rem 30)
             , width (pct 98)
             ]
+        , (.) VideoTitle
+            [ textAlign left ]
         ]
