@@ -241,7 +241,7 @@ searchVideo query =
         url =
             constructUrl query apiKey
     in
-        Http.send Display <| Http.get url fetchNextPageToken
+        Http.send Display <| Http.get url decodePage
 
 
 type alias Page =
@@ -270,30 +270,30 @@ type alias Thumbnail =
     }
 
 
-fetchNextPageToken : Decode.Decoder Page
-fetchNextPageToken =
+decodePage : Decode.Decoder Page
+decodePage =
     Decode.map2 Page
         (Decode.field "nextPageToken" Decode.string)
-        (Decode.field "items" (Decode.list fetchVideoRaw))
+        (Decode.field "items" (Decode.list decodeVideoRaw))
 
 
-fetchVideoRaw : Decode.Decoder VideoRaw
-fetchVideoRaw =
+decodeVideoRaw : Decode.Decoder VideoRaw
+decodeVideoRaw =
     Decode.map2 VideoRaw
         (Decode.at [ "id", "videoId" ] Decode.string)
-        (Decode.field "snippet" fetchVideoDetails)
+        (Decode.field "snippet" decodeVideoDetails)
 
 
-fetchVideoDetails : Decode.Decoder VideoDetails
-fetchVideoDetails =
+decodeVideoDetails : Decode.Decoder VideoDetails
+decodeVideoDetails =
     Decode.map3 VideoDetails
         (Decode.field "title" Decode.string)
         (Decode.field "description" Decode.string)
-        (Decode.field "thumbnails" fetchThumbnails)
+        (Decode.field "thumbnails" decodeThumbnails)
 
 
-fetchThumbnails : Decode.Decoder Thumbnail
-fetchThumbnails =
+decodeThumbnails : Decode.Decoder Thumbnail
+decodeThumbnails =
     Decode.map3 Thumbnail
         (Decode.at [ "default", "url" ] Decode.string)
         (Decode.at [ "default", "width" ] Decode.int)
