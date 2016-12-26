@@ -130,11 +130,40 @@ view : Model -> Html.Html Msg
 view model =
     div [ id [ MyCss.Wrap ] ]
         [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
-        , div [ id [ MyCss.Nav ] ] []
-        , div [ id [ MyCss.Main ] ] [ h3 [] [ text "Column 1" ] ]
-        , div [ id [ MyCss.SideBar ] ] [ h3 [] [ text "Column 2" ] ]
+        , div [ id [ MyCss.Nav ] ] [ searchBar model ]
+        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo model ] ]
+        , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
+
+
+searchBar : Model -> Html.Html Msg
+searchBar model =
+    form [ onSubmit Search ]
+        [ input
+            [ type_ "text"
+            , onInput Input
+            , value model.input
+            ]
+            []
+        , button [ type_ "submit" ] [ text "Search" ]
+        ]
+
+
+activeVideo : Model -> Html.Html Msg
+activeVideo model =
+    div [ class [ MyCss.ActiveVideo ] ]
+        [ iframe
+            [ class [ MyCss.VideoFrame ]
+            , src ("https://www.youtube.com/embed/" ++ (firstVideo model))
+            ]
+            []
+        ]
+
+
+relatedVideos : Model -> Html.Html Msg
+relatedVideos model =
+    ul [] <| map (\item -> relatedVideoView item) model.page.items
 
 
 

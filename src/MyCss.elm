@@ -7,6 +7,8 @@ import Css.Namespace exposing (namespace)
 
 type CssClasses
     = NavBar
+    | ActiveVideo
+    | VideoFrame
 
 
 type CssIds
@@ -34,7 +36,7 @@ css =
             , color (hex "000")
             ]
         , (#) Wrap
-            [ width (px 750)
+            [ width (vw 100)
             , marginLeft zero
             , marginRight zero
             , marginTop auto
@@ -42,21 +44,31 @@ css =
             , backgroundColor (hex "99c")
             ]
         , (#) Header
-            [ backgroundColor (hex "ddd") ]
+            [ backgroundColor (hex "ddd")
+            , textAlign center
+            ]
         , (#) Nav
-            [ backgroundColor (hex "c99") ]
+            [ textAlign center
+            , backgroundColor (hex "c99")
+            ]
         , (#) Main
             [ backgroundColor (hex "9c9")
             , float left
-            , width (px 500)
+            , width (vw 75)
             ]
         , (#) SideBar
             [ backgroundColor (hex "c9c")
             , float right
-            , width (px 250)
+            , width (vw 25)
             ]
         , (#) Footer
             [ property "clear" "both"
             , backgroundColor (hex "cc9")
+            ]
+        , (.) ActiveVideo
+            [ textAlign center ]
+        , (.) VideoFrame
+            [ height (Css.rem 30)
+            , width (pct 98)
             ]
         ]

@@ -13,7 +13,7 @@ html {
 }
 
 #Wrap {
-    width: 750px;
+    width: 100vw;
     margin-left: 0;
     margin-right: 0;
     margin-top: auto;
@@ -23,25 +23,36 @@ html {
 
 #Header {
     background-color: #ddd;
+    text-align: center;
 }
 
 #Nav {
+    text-align: center;
     background-color: #c99;
 }
 
 #Main {
     background-color: #9c9;
     float: left;
-    width: 500px;
+    width: 75vw;
 }
 
 #SideBar {
     background-color: #c9c;
     float: right;
-    width: 250px;
+    width: 25vw;
 }
 
 #Footer {
     clear: both;
     background-color: #cc9;
+}
+
+.baseActiveVideo {
+    text-align: center;
+}
+
+.baseVideoFrame {
+    height: 30rem;
+    width: 98%;
 }
