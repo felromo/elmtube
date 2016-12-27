@@ -50,7 +50,7 @@ type alias Video =
 type alias ActiveVideo =
     { video : Video
     , comments : List String
-    , related : List Video
+    , related : List VideoRaw
     }
 
 
@@ -74,11 +74,11 @@ type Msg
     = Input String
     | Search
     | SearchNative
-    | SelectVideo
+    | SelectVideo VideoRaw
     | LikeVideo
     | DislikeVideo
     | Comment
-    | Display (Result Http.Error Page)
+    | SetPage (Result Http.Error Page)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -94,8 +94,16 @@ update msg model =
         SearchNative ->
             ( model, searchVideo "raise cain" )
 
-        Display (Ok receivedPage) ->
-            { model | page = receivedPage } ! []
+        SetPage (Ok receivedPage) ->
+            { model
+                | page = receivedPage
+                , activeVideo =
+                    { video = composeVideo <| head receivedPage.items
+                    , comments = []
+                    , related = receivedPage.items
+                    }
+            }
+                ! []
 
         _ ->
             ( model, Cmd.none )
@@ -138,7 +146,7 @@ view model =
     div [ id [ MyCss.Wrap ] ]
         [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
-        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo <| composeVideo <| head model.page.items ] ]
+        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo model.activeVideo.video ] ]
         , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
@@ -182,6 +190,11 @@ relatedVideoView video =
         , img [ src video.details.thumbnails.url ] []
         , p [] [ text video.details.description ]
         ]
+
+
+onselectedRelatedVideo : VideoRaw -> Attribute Msg
+onselectedRelatedVideo videoRaw =
+    Html.Events.on "click" <| Decode.succeed <| SelectVideo videoRaw
 
 
 firstVideoId : Model -> String
@@ -242,7 +255,7 @@ searchVideo query =
         url =
             constructUrl query apiKey
     in
-        Http.send Display <| Http.get url decodePage
+        Http.send SetPage <| Http.get url decodePage
 
 
 type alias Page =
