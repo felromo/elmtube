@@ -33,6 +33,7 @@ type alias Model =
     , searchTerm : String
     , searchReturn : List Video
     , activeVideo : ActiveVideo
+    , activeVideoComments : CommentPage
     , page : Page
     }
 
@@ -80,12 +81,28 @@ type alias Thumbnail =
     }
 
 
+type alias CommentPage =
+    { nextPageToken : String, items : List Comment }
+
+
+type alias Comment =
+    { id : String
+    , authorDisplayName : String
+    , authorProfileImageUrl : String
+    , textDisplay : String
+    , likeCount : Int
+    , publishedAt : String
+    , totalReplyCount : Int
+    }
+
+
 init : ( Model, Cmd Msg )
 init =
     ( { input = ""
       , searchTerm = ""
       , searchReturn = []
       , activeVideo = (ActiveVideo (Video "" "" "" 0 0 (Thumbnail "" 0 0)) [] [])
+      , activeVideoComments = CommentPage "" []
       , page = Page "" []
       }
     , searchVideo "elm"
@@ -134,7 +151,13 @@ update msg model =
                         , related = composeRelated first.videoId receivedPage.items
                         }
                 }
-                    ! []
+                    ! [ fetchComments first.videoId ]
+
+        PopulateComments (Ok receivedCommentPage) ->
+            { model
+                | activeVideoComments = receivedCommentPage
+            }
+                ! []
 
         SelectVideo video ->
             { model
@@ -192,7 +215,10 @@ view model =
     div [ id [ MyCss.Wrap ] ]
         [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
-        , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo model.activeVideo.video ] ]
+        , div [ id [ MyCss.Main ] ]
+            [ div [] [ activeVideo model.activeVideo.video ]
+            , commentsView model.activeVideoComments.items
+            ]
         , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model.activeVideo.related ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
@@ -238,6 +264,17 @@ relatedVideoView video =
             []
         , p [] [ text video.details.description ]
         ]
+
+
+commentsView : List Comment -> Html.Html Msg
+commentsView =
+    ul [] << map (\comment -> commentsLiView comment)
+
+
+commentsLiView : Comment -> Html.Html Msg
+commentsLiView comment =
+    li []
+        [ text "hello" ]
 
 
 firstVideoRaw : List VideoRaw -> VideoRaw
@@ -315,21 +352,6 @@ fetchComments videoId =
             "https://www.googleapis.com/youtube/v3/commentThreads?" ++ "key=" ++ apiKey ++ "&part=snippet&videoId=" ++ videoId
     in
         Http.send PopulateComments <| Http.get url decodeCommentPage
-
-
-type alias CommentPage =
-    { nextPageToken : String, items : List Comment }
-
-
-type alias Comment =
-    { id : String
-    , authorDisplayName : String
-    , authorProfileImageUrl : String
-    , textDisplay : String
-    , likeCount : Int
-    , publishedAt : String
-    , totalReplyCount : Int
-    }
 
 
 decodeCommentPage : Decode.Decoder CommentPage
