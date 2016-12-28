@@ -103,7 +103,8 @@ type Msg
     | SelectVideo Video
     | LikeVideo
     | DislikeVideo
-    | Comment
+    | PopulateComments (Result Http.Error CommentPage)
+    | PostComment
     | SetPage (Result Http.Error Page)
 
 
@@ -305,6 +306,49 @@ searchVideo query =
             constructUrl query apiKey
     in
         Http.send SetPage <| Http.get url decodePage
+
+
+fetchComments : String -> Cmd Msg
+fetchComments videoId =
+    let
+        url =
+            "https://www.googleapis.com/youtube/v3/commentThreads?" ++ "key=" ++ apiKey ++ "&part=snippet&videoId=" ++ videoId
+    in
+        Http.send PopulateComments <| Http.get url decodeCommentPage
+
+
+type alias CommentPage =
+    { nextPageToken : String, items : List Comment }
+
+
+type alias Comment =
+    { id : String
+    , authorDisplayName : String
+    , authorProfileImageUrl : String
+    , textDisplay : String
+    , likeCount : Int
+    , publishedAt : String
+    , totalReplyCount : Int
+    }
+
+
+decodeCommentPage : Decode.Decoder CommentPage
+decodeCommentPage =
+    Decode.map2 CommentPage
+        (Decode.field "nextPageToken" Decode.string)
+        (Decode.field "items" (Decode.list decodeComment))
+
+
+decodeComment : Decode.Decoder Comment
+decodeComment =
+    Decode.map7 Comment
+        (Decode.field "id" Decode.string)
+        (Decode.at [ "snippet", "topLevelComment", "snippet", "authorDisplayName" ] Decode.string)
+        (Decode.at [ "snippet", "topLevelComment", "snippet", "authorProfileImageUrl" ] Decode.string)
+        (Decode.at [ "snippet", "topLevelComment", "snippet", "textDisplay" ] Decode.string)
+        (Decode.at [ "snippet", "topLevelComment", "snippet", "likeCount" ] Decode.int)
+        (Decode.at [ "snippet", "topLevelComment", "snippet", "publishedAt" ] Decode.string)
+        (Decode.at [ "snippet", "totalReplyCount" ] Decode.int)
 
 
 decodePage : Decode.Decoder Page
