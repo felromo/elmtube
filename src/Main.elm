@@ -54,6 +54,32 @@ type alias ActiveVideo =
     }
 
 
+type alias Page =
+    { nextPageToken : String
+    , items : List VideoRaw
+    }
+
+
+type alias VideoRaw =
+    { videoId : String
+    , details : VideoDetails
+    }
+
+
+type alias VideoDetails =
+    { title : String
+    , description : String
+    , thumbnails : Thumbnail
+    }
+
+
+type alias Thumbnail =
+    { url : String
+    , width : Int
+    , height : Int
+    }
+
+
 init : ( Model, Cmd Msg )
 init =
     ( { input = ""
@@ -74,7 +100,7 @@ type Msg
     = Input String
     | Search
     | SearchNative
-    | SelectVideo VideoRaw
+    | SelectVideo Video
     | LikeVideo
     | DislikeVideo
     | Comment
@@ -98,9 +124,19 @@ update msg model =
             { model
                 | page = receivedPage
                 , activeVideo =
-                    { video = composeVideo <| head receivedPage.items
+                    { video = composeVideo <| firstVideoRaw receivedPage.items
                     , comments = []
                     , related = receivedPage.items
+                    }
+            }
+                ! []
+
+        SelectVideo video ->
+            { model
+                | activeVideo =
+                    { video = video
+                    , comments = []
+                    , related = model.page.items
                     }
             }
                 ! []
@@ -139,6 +175,11 @@ subscriptions model =
 placeholderVideo : Video
 placeholderVideo =
     Video "" "Loading.." "Loading.." 0 0 (Thumbnail "" 0 0)
+
+
+placeholderVideoRaw : VideoRaw
+placeholderVideoRaw =
+    VideoRaw "" <| VideoDetails "" "" <| Thumbnail "" 0 0
 
 
 view : Model -> Html.Html Msg
@@ -185,44 +226,36 @@ relatedVideos model =
 
 relatedVideoView : VideoRaw -> Html.Html Msg
 relatedVideoView video =
-    li []
+    li [ onClick (SelectVideo <| composeVideo video) ]
         [ h5 [] [ text video.details.title ]
-        , img [ src video.details.thumbnails.url ] []
+        , img
+            [ src video.details.thumbnails.url ]
+            []
         , p [] [ text video.details.description ]
         ]
 
 
-onselectedRelatedVideo : VideoRaw -> Attribute Msg
-onselectedRelatedVideo videoRaw =
-    Html.Events.on "click" <| Decode.succeed <| SelectVideo videoRaw
-
-
-firstVideoId : Model -> String
-firstVideoId model =
+firstVideoRaw : List VideoRaw -> VideoRaw
+firstVideoRaw videos =
     let
         first =
-            (head model.page.items)
+            (head videos)
     in
         case first of
-            Just value ->
-                value.videoId
+            Just video ->
+                video
 
             Nothing ->
-                ""
+                placeholderVideoRaw
 
 
-composeVideo : Maybe VideoRaw -> Video
-composeVideo videoRaw =
-    case videoRaw of
-        Just { videoId, details } ->
-            let
-                { title, description, thumbnails } =
-                    details
-            in
-                Video videoId title description 0 0 thumbnails
-
-        Nothing ->
-            placeholderVideo
+composeVideo : VideoRaw -> Video
+composeVideo { videoId, details } =
+    let
+        { title, description, thumbnails } =
+            details
+    in
+        Video videoId title description 0 0 thumbnails
 
 
 apiKey : String
@@ -256,32 +289,6 @@ searchVideo query =
             constructUrl query apiKey
     in
         Http.send SetPage <| Http.get url decodePage
-
-
-type alias Page =
-    { nextPageToken : String
-    , items : List VideoRaw
-    }
-
-
-type alias VideoRaw =
-    { videoId : String
-    , details : VideoDetails
-    }
-
-
-type alias VideoDetails =
-    { title : String
-    , description : String
-    , thumbnails : Thumbnail
-    }
-
-
-type alias Thumbnail =
-    { url : String
-    , width : Int
-    , height : Int
-    }
 
 
 decodePage : Decode.Decoder Page
