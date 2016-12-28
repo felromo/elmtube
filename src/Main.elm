@@ -121,22 +121,26 @@ update msg model =
             ( model, searchVideo "raise cain" )
 
         SetPage (Ok receivedPage) ->
-            { model
-                | page = receivedPage
-                , activeVideo =
-                    { video = composeVideo <| firstVideoRaw receivedPage.items
-                    , comments = []
-                    , related = receivedPage.items
-                    }
-            }
-                ! []
+            let
+                first =
+                    firstVideoRaw receivedPage.items
+            in
+                { model
+                    | page = receivedPage
+                    , activeVideo =
+                        { video = composeVideo first
+                        , comments = []
+                        , related = composeRelated first.videoId receivedPage.items
+                        }
+                }
+                    ! []
 
         SelectVideo video ->
             { model
                 | activeVideo =
                     { video = video
                     , comments = []
-                    , related = model.page.items
+                    , related = composeRelated video.id model.page.items
                     }
             }
                 ! []
@@ -188,7 +192,7 @@ view model =
         [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
         , div [ id [ MyCss.Main ] ] [ h3 [] [ activeVideo model.activeVideo.video ] ]
-        , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model ] ]
+        , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model.activeVideo.related ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
         ]
 
@@ -219,9 +223,9 @@ activeVideo video =
         ]
 
 
-relatedVideos : Model -> Html.Html Msg
-relatedVideos model =
-    ul [] <| map (\item -> relatedVideoView item) model.page.items
+relatedVideos : List VideoRaw -> Html.Html Msg
+relatedVideos videosRaw =
+    ul [] <| map (\videoRaw -> relatedVideoView videoRaw) videosRaw
 
 
 relatedVideoView : VideoRaw -> Html.Html Msg
@@ -256,6 +260,18 @@ composeVideo { videoId, details } =
             details
     in
         Video videoId title description 0 0 thumbnails
+
+
+composeRelated : String -> List VideoRaw -> List VideoRaw
+composeRelated videoId videosRaw =
+    List.filterMap
+        (\video ->
+            if video.videoId /= videoId then
+                Just video
+            else
+                Nothing
+        )
+        videosRaw
 
 
 apiKey : String
