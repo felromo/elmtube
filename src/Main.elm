@@ -276,7 +276,15 @@ relatedVideoView video =
 
 
 commentsView : List Comment -> Html.Html Msg
-commentsView =
+commentsView comments =
+    if List.length comments > 0 then
+        commentsUlView comments
+    else
+        p [] [ text "Comments Disabled For This Video" ]
+
+
+commentsUlView : List Comment -> Html.Html Msg
+commentsUlView =
     ul [] << map (\comment -> commentsLiView comment)
 
 
