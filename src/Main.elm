@@ -34,6 +34,7 @@ type alias Model =
     , searchReturn : List Video
     , activeVideo : ActiveVideo
     , activeVideoComments : CommentPage
+    , commentsDisabled : Bool
     , page : Page
     , error : String
     }
@@ -104,6 +105,7 @@ init =
       , searchReturn = []
       , activeVideo = (ActiveVideo (Video "" "" "" 0 0 (Thumbnail "" 0 0)) [] [])
       , activeVideoComments = CommentPage (Just "") []
+      , commentsDisabled = False
       , page = Page "" []
       , error = ""
       }
@@ -158,8 +160,19 @@ update msg model =
         PopulateComments (Ok receivedCommentPage) ->
             { model
                 | activeVideoComments = receivedCommentPage
+                , commentsDisabled = False
             }
                 ! []
+
+        PopulateComments (Err (Http.BadStatus { status })) ->
+            let
+                isDisabled =
+                    if status.code == 403 then
+                        True
+                    else
+                        False
+            in
+                { model | commentsDisabled = isDisabled } ! []
 
         PopulateComments (Err error) ->
             { model
@@ -226,7 +239,7 @@ view model =
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
         , div [ id [ MyCss.Main ] ]
             [ div [] [ activeVideo model.activeVideo.video ]
-            , commentsView model.activeVideoComments.items
+            , commentsView model.activeVideoComments.items model.commentsDisabled
             ]
         , div [ id [ MyCss.SideBar ] ] [ h3 [] [ relatedVideos model.activeVideo.related ] ]
         , div [ id [ MyCss.Footer ] ] [ p [] [ text "footer" ] ]
@@ -275,12 +288,14 @@ relatedVideoView video =
         ]
 
 
-commentsView : List Comment -> Html.Html Msg
-commentsView comments =
-    if List.length comments > 0 then
+commentsView : List Comment -> Bool -> Html.Html Msg
+commentsView comments commentsDisabled =
+    if commentsDisabled then
+        p [] [ text "Comments have been disabled for this video" ]
+    else if (List.length comments > 0 && (not commentsDisabled)) then
         commentsUlView comments
     else
-        p [] [ text "Comments Disabled For This Video" ]
+        p [] [ text "This video has no comments :(" ]
 
 
 commentsUlView : List Comment -> Html.Html Msg
