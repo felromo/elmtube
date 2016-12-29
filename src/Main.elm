@@ -35,6 +35,7 @@ type alias Model =
     , activeVideo : ActiveVideo
     , activeVideoComments : CommentPage
     , page : Page
+    , error : String
     }
 
 
@@ -82,7 +83,7 @@ type alias Thumbnail =
 
 
 type alias CommentPage =
-    { nextPageToken : String, items : List Comment }
+    { nextPageToken : Maybe String, items : List Comment }
 
 
 type alias Comment =
@@ -102,8 +103,9 @@ init =
       , searchTerm = ""
       , searchReturn = []
       , activeVideo = (ActiveVideo (Video "" "" "" 0 0 (Thumbnail "" 0 0)) [] [])
-      , activeVideoComments = CommentPage "" []
+      , activeVideoComments = CommentPage (Just "") []
       , page = Page "" []
+      , error = ""
       }
     , searchVideo "elm"
     )
@@ -159,8 +161,12 @@ update msg model =
             }
                 ! []
 
-        PopulateComments (Err _) ->
-            { model | activeVideoComments = CommentPage "" [] } ! []
+        PopulateComments (Err error) ->
+            { model
+                | activeVideoComments = CommentPage (Just "") []
+                , error = toString error
+            }
+                ! []
 
         SelectVideo video ->
             { model
@@ -360,7 +366,7 @@ fetchComments videoId =
 decodeCommentPage : Decode.Decoder CommentPage
 decodeCommentPage =
     Decode.map2 CommentPage
-        (Decode.field "nextPageToken" Decode.string)
+        (Decode.maybe (Decode.field "nextPageToken" Decode.string))
         (Decode.field "items" (Decode.list decodeComment))
 
 
