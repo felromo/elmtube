@@ -159,6 +159,9 @@ update msg model =
             }
                 ! []
 
+        PopulateComments (Err _) ->
+            { model | activeVideoComments = CommentPage "" [] } ! []
+
         SelectVideo video ->
             { model
                 | activeVideo =
@@ -167,7 +170,7 @@ update msg model =
                     , related = composeRelated video.id model.page.items
                     }
             }
-                ! []
+                ! [ fetchComments video.id ]
 
         _ ->
             ( model, Cmd.none )
@@ -274,7 +277,7 @@ commentsView =
 commentsLiView : Comment -> Html.Html Msg
 commentsLiView comment =
     li []
-        [ text "hello" ]
+        [ p [] [ text comment.textDisplay ] ]
 
 
 firstVideoRaw : List VideoRaw -> VideoRaw
