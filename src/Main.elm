@@ -300,7 +300,7 @@ commentsView comments commentsDisabled =
 
 commentsUlView : List Comment -> Html.Html Msg
 commentsUlView =
-    ul [] << map (\comment -> commentsLiView comment)
+    ul [ class [ MyCss.CommentsArea ] ] << map (\comment -> commentsLiView comment)
 
 
 commentsLiView : Comment -> Html.Html Msg

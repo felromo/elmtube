@@ -11,6 +11,7 @@ type CssClasses
     | VideoFrame
     | VideoTitle
     | VideoDescription
+    | CommentsArea
     | CommentLi
     | CommentFooter
     | CommentUserImage
@@ -32,16 +33,16 @@ css : Stylesheet
 css =
     (stylesheet << namespace "base")
         [ body
-            [ backgroundColor (hex "a7a09a")
-            , margin zero
+            [ margin zero
             , padding zero
             , color (hex "000")
+              -- , backgroundColor (hex "a7a09a")
             ]
         , html
-            [ backgroundColor (hex "a7a09a")
-            , margin zero
+            [ margin zero
             , padding zero
             , color (hex "000")
+              -- , backgroundColor (hex "a7a09a")
             ]
         , ul [ listStyleType none ]
         , (#) Wrap
@@ -50,29 +51,29 @@ css =
             , marginRight auto
             , marginTop zero
             , marginBottom zero
-            , backgroundColor (hex "99c")
+              -- , backgroundColor (hex "99c")
             ]
         , (#) Header
-            [ backgroundColor (hex "ddd")
-            , textAlign center
+            [ textAlign center
+              -- , backgroundColor (hex "ddd")
             ]
         , (#) Nav
             [ textAlign center
-            , backgroundColor (hex "c99")
+              -- , backgroundColor (hex "c99")
             ]
         , (#) Main
-            [ backgroundColor (hex "9c9")
-            , float left
+            [ float left
             , width (vw 75)
+              -- , backgroundColor (hex "9c9")
             ]
         , (#) SideBar
-            [ backgroundColor (hex "c9c")
-            , float right
+            [ float right
             , width (vw 25)
+              -- , backgroundColor (hex "c9c")
             ]
         , (#) Footer
             [ property "clear" "both"
-            , backgroundColor (hex "cc9")
+              -- , backgroundColor (hex "cc9")
             ]
         , (.) ActiveVideo
             [ textAlign center ]
@@ -84,6 +85,12 @@ css =
             [ textAlign left ]
         , (.) VideoDescription
             [ textAlign left ]
+        , (.) CommentsArea
+            [ backgroundColor (hex "dedada")
+            , borderRadius (px 5)
+            , property "margin" "0 10px"
+            , property "padding" "1px 10px"
+            ]
         , (.) CommentLi
             [ property "margin" "30px auto" ]
         , (.) CommentUserImage

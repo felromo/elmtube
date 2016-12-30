@@ -1,12 +1,10 @@
 body {
-    background-color: #a7a09a;
     margin: 0;
     padding: 0;
     color: #000;
 }
 
 html {
-    background-color: #a7a09a;
     margin: 0;
     padding: 0;
     color: #000;
@@ -22,34 +20,28 @@ ul {
     margin-right: auto;
     margin-top: 0;
     margin-bottom: 0;
-    background-color: #99c;
 }
 
 #Header {
-    background-color: #ddd;
     text-align: center;
 }
 
 #Nav {
     text-align: center;
-    background-color: #c99;
 }
 
 #Main {
-    background-color: #9c9;
     float: left;
     width: 75vw;
 }
 
 #SideBar {
-    background-color: #c9c;
     float: right;
     width: 25vw;
 }
 
 #Footer {
     clear: both;
-    background-color: #cc9;
 }
 
 .baseActiveVideo {
@@ -67,6 +59,13 @@ ul {
 
 .baseVideoDescription {
     text-align: left;
+}
+
+.baseCommentsArea {
+    background-color: #dedada;
+    border-radius: 5px;
+    margin: 0 10px;
+    padding: 1px 10px;
 }
 
 .baseCommentLi {
