@@ -12,12 +12,16 @@ html {
     color: #000;
 }
 
+ul {
+    list-style-type: none;
+}
+
 #Wrap {
     width: 100vw;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
     background-color: #99c;
 }
 
@@ -63,4 +67,30 @@ html {
 
 .baseVideoDescription {
     text-align: left;
+}
+
+.baseCommentLi {
+    margin: 30px auto;
+}
+
+.baseCommentUserImage {
+    float: left;
+    width: 5%;
+}
+
+.baseCommentContent {
+    float: right;
+    width: 95%;
+}
+
+.baseCommentContentUserName {
+    margin: 0;
+}
+
+.baseCommentContentText {
+    margin: 0;
+}
+
+.baseCommentFooter {
+    clear: both;
 }

@@ -305,8 +305,16 @@ commentsUlView =
 
 commentsLiView : Comment -> Html.Html Msg
 commentsLiView comment =
-    li []
-        [ p [] [ text comment.textDisplay ] ]
+    li [ class [ MyCss.CommentLi ] ]
+        [ div [ class [ MyCss.CommentUserImage ] ]
+            [ img [ src comment.authorProfileImageUrl ] []
+            ]
+        , div [ class [ MyCss.CommentContent ] ]
+            [ h5 [ class [ MyCss.CommentContentUserName ] ] [ text comment.authorDisplayName ]
+            , p [ class [ MyCss.CommentContentText ] ] [ text comment.textDisplay ]
+            ]
+        , div [ class [ MyCss.CommentFooter ] ] []
+        ]
 
 
 firstVideoRaw : List VideoRaw -> VideoRaw

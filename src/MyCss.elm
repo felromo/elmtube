@@ -1,7 +1,7 @@
 module MyCss exposing (CssClasses(..), CssIds(..), css)
 
 import Css exposing (..)
-import Css.Elements exposing (html, body, li)
+import Css.Elements exposing (html, body, li, ul)
 import Css.Namespace exposing (namespace)
 
 
@@ -11,6 +11,12 @@ type CssClasses
     | VideoFrame
     | VideoTitle
     | VideoDescription
+    | CommentLi
+    | CommentFooter
+    | CommentUserImage
+    | CommentContent
+    | CommentContentUserName
+    | CommentContentText
 
 
 type CssIds
@@ -37,12 +43,13 @@ css =
             , padding zero
             , color (hex "000")
             ]
+        , ul [ listStyleType none ]
         , (#) Wrap
             [ width (vw 100)
-            , marginLeft zero
-            , marginRight zero
-            , marginTop auto
-            , marginBottom auto
+            , marginLeft auto
+            , marginRight auto
+            , marginTop zero
+            , marginBottom zero
             , backgroundColor (hex "99c")
             ]
         , (#) Header
@@ -77,4 +84,20 @@ css =
             [ textAlign left ]
         , (.) VideoDescription
             [ textAlign left ]
+        , (.) CommentLi
+            [ property "margin" "30px auto" ]
+        , (.) CommentUserImage
+            [ float left
+            , width (pct 5)
+            ]
+        , (.) CommentContent
+            [ float right
+            , width (pct 95)
+            ]
+        , (.) CommentContentUserName
+            [ property "margin" "0" ]
+        , (.) CommentContentText
+            [ property "margin" "0" ]
+        , (.) CommentFooter
+            [ property "clear" "both" ]
         ]
