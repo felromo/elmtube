@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    font-family: Roboto, sans-serif;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
+
+ul {
+    list-style-type: none;
+}
+
+#Wrap {
+    width: 100vw;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#Header {
+    text-align: center;
+}
+
+#Nav {
+    text-align: center;
+}
+
+#Main {
+    float: left;
+    width: 75vw;
+}
+
+#SideBar {
+    float: right;
+    width: 25vw;
+}
+
+#Footer {
+    clear: both;
+}
+
+.baseHeadTitle {
+    font-size: 3rem;
+}
+
+.baseSearchBar {
+    width: 25%;
+}
+
+.baseSearchForm {
+    margin: 1rem;
+}
+
+.baseActiveVideo {
+    text-align: center;
+}
+
+.baseVideoFrame {
+    height: 30rem;
+    width: 98%;
+}
+
+.baseVideoDetails {
+    background-color: #dedada;
+    border-radius: 5px;
+}
+
+.baseVideoTitle {
+    text-align: left;
+}
+
+.baseVideoDescription {
+    text-align: left;
+}
+
+.baseCommentsArea {
+    background-color: #dedada;
+    border-radius: 5px;
+    margin: 0 10px;
+    padding: 1px 10px;
+}
+
+.baseCommentLi {
+    margin: 30px auto;
+}
+
+.baseCommentUserImage {
+    float: left;
+    width: 5%;
+}
+
+.baseCommentContent {
+    float: right;
+    width: 95%;
+}
+
+.baseCommentContentUserName {
+    margin: 0;
+}
+
+.baseCommentContentText {
+    margin: 0;
+}
+
+.baseCommentFooter {
+    clear: both;
+}
+
+.baseRelatedLi {
+    margin: 10px 0;
+}
+
+.baseRelatedImg {
+    float: left;
+}
+
+.baseRelatedFooter {
+    clear: both;
+}
