@@ -2,6 +2,7 @@ body {
     margin: 0;
     padding: 0;
     color: #000;
+    font-family: Roboto, sans-serif;
 }
 
 html {
@@ -44,6 +45,18 @@ ul {
     clear: both;
 }
 
+.baseHeadTitle {
+    font-size: 3rem;
+}
+
+.baseSearchBar {
+    width: 25%;
+}
+
+.baseSearchForm {
+    margin: 1rem;
+}
+
 .baseActiveVideo {
     text-align: center;
 }
@@ -51,6 +64,11 @@ ul {
 .baseVideoFrame {
     height: 30rem;
     width: 98%;
+}
+
+.baseVideoDetails {
+    background-color: #dedada;
+    border-radius: 5px;
 }
 
 .baseVideoTitle {
@@ -91,5 +109,17 @@ ul {
 }
 
 .baseCommentFooter {
+    clear: both;
+}
+
+.baseRelatedLi {
+    margin: 10px 0;
+}
+
+.baseRelatedImg {
+    float: left;
+}
+
+.baseRelatedFooter {
     clear: both;
 }

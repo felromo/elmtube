@@ -235,7 +235,7 @@ placeholderVideoRaw =
 view : Model -> Html.Html Msg
 view model =
     div [ id [ MyCss.Wrap ] ]
-        [ div [ id [ MyCss.Header ] ] [ h1 [] [ text "Elmtube" ] ]
+        [ div [ id [ MyCss.Header ] ] [ h1 [ class [ MyCss.HeadTitle ] ] [ text "Elmtube" ] ]
         , div [ id [ MyCss.Nav ] ] [ searchBar model ]
         , div [ id [ MyCss.Main ] ]
             [ div [] [ activeVideo model.activeVideo.video ]
@@ -248,9 +248,13 @@ view model =
 
 searchBar : Model -> Html.Html Msg
 searchBar model =
-    form [ onSubmit Search ]
+    form
+        [ class [ MyCss.SearchForm ]
+        , onSubmit Search
+        ]
         [ input
-            [ type_ "text"
+            [ class [ MyCss.SearchBar ]
+            , type_ "text"
             , onInput Input
             , value model.input
             ]
@@ -267,8 +271,10 @@ activeVideo video =
             , src ("https://www.youtube.com/embed/" ++ video.id)
             ]
             []
-        , h3 [ class [ MyCss.VideoTitle ] ] [ text video.title ]
-        , p [ class [ MyCss.VideoDescription ] ] [ text video.description ]
+        , div [ class [ MyCss.VideoDetails ] ]
+            [ h3 [ class [ MyCss.VideoTitle ] ] [ text video.title ]
+            , p [ class [ MyCss.VideoDescription ] ] [ text video.description ]
+            ]
         ]
 
 
@@ -279,12 +285,18 @@ relatedVideos videosRaw =
 
 relatedVideoView : VideoRaw -> Html.Html Msg
 relatedVideoView video =
-    li [ onClick (SelectVideo <| composeVideo video) ]
-        [ h5 [] [ text video.details.title ]
-        , img
-            [ src video.details.thumbnails.url ]
+    li
+        [ class [ MyCss.RelatedLi ]
+        , onClick (SelectVideo <| composeVideo video)
+        ]
+        [ img
+            [ class [ MyCss.RelatedImg ]
+            , src video.details.thumbnails.url
+            ]
             []
-        , p [] [ text video.details.description ]
+        , h5 [] [ text video.details.title ]
+        , div [ class [ MyCss.RelatedFooter ] ] []
+          -- , p [] [ text video.details.description ]
         ]
 
 

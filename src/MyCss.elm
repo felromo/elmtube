@@ -7,8 +7,12 @@ import Css.Namespace exposing (namespace)
 
 type CssClasses
     = NavBar
+    | HeadTitle
+    | SearchBar
+    | SearchForm
     | ActiveVideo
     | VideoFrame
+    | VideoDetails
     | VideoTitle
     | VideoDescription
     | CommentsArea
@@ -18,6 +22,10 @@ type CssClasses
     | CommentContent
     | CommentContentUserName
     | CommentContentText
+    | RelatedLi
+    | RelatedTitle
+    | RelatedImg
+    | RelatedFooter
 
 
 type CssIds
@@ -36,6 +44,7 @@ css =
             [ margin zero
             , padding zero
             , color (hex "000")
+            , property "font-family" "Roboto, sans-serif"
               -- , backgroundColor (hex "a7a09a")
             ]
         , html
@@ -75,11 +84,21 @@ css =
             [ property "clear" "both"
               -- , backgroundColor (hex "cc9")
             ]
+        , (.) HeadTitle
+            [ fontSize (Css.rem 3) ]
+        , (.) SearchBar
+            [ width (pct 25) ]
+        , (.) SearchForm
+            [ margin (Css.rem 1) ]
         , (.) ActiveVideo
             [ textAlign center ]
         , (.) VideoFrame
             [ height (Css.rem 30)
             , width (pct 98)
+            ]
+        , (.) VideoDetails
+            [ backgroundColor (hex "dedada")
+            , borderRadius (px 5)
             ]
         , (.) VideoTitle
             [ textAlign left ]
@@ -106,5 +125,11 @@ css =
         , (.) CommentContentText
             [ property "margin" "0" ]
         , (.) CommentFooter
+            [ property "clear" "both" ]
+        , (.) RelatedLi
+            [ property "margin" "10px 0" ]
+        , (.) RelatedImg
+            [ float left ]
+        , (.) RelatedFooter
             [ property "clear" "both" ]
         ]
