@@ -54,26 +54,6 @@
 
 
 
-	//interop
-	// elm.ports.alert.subscribe(function(message) {
-	//   alert(message);
-	//   elm.ports.log.send('Alert called: ' + message);
-	// });
-
-	//elm-hot callback
-	// elm.hot.subscribe(function (event, context) {
-	//   console.log('elm-hot event:', event)
-	//   context.state.swapCount ++
-	// })
-
-	const API_KEY = 'AIzaSyAVYprfgQ03PuwwwKLNVdh6KJr2Me9XLYM';
-
-	elm.ports.searchQuery.subscribe(function (query) {
-	    // console.log('Come from elm', query);
-	    YTSearch({key: API_KEY, term: query}, videos => {
-	        console.log(videos);
-	    });
-	});
 
 
 /***/ },
@@ -15915,14 +15895,6 @@
 					_1: {ctor: '[]'}
 				}));
 		});
-	var _user$project$Main$searchQuery = _elm_lang$core$Native_Platform.outgoingPort(
-		'searchQuery',
-		function (v) {
-			return v;
-		});
-	var _user$project$Main$searchResults = _elm_lang$core$Native_Platform.incomingPort(
-		'searchResults',
-		_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
 	var _user$project$Main$Model = F8(
 		function (a, b, c, d, e, f, g, h) {
 			return {input: a, searchTerm: b, searchReturn: c, activeVideo: d, activeVideoComments: e, commentsDisabled: f, page: g, error: h};
@@ -16250,7 +16222,7 @@
 	var _user$project$Main$update = F2(
 		function (msg, model) {
 			var _p6 = msg;
-			_v2_8:
+			_v2_7:
 			do {
 				switch (_p6.ctor) {
 					case 'Input':
@@ -16267,12 +16239,6 @@
 								model,
 								{input: ''}),
 							_1: _user$project$Main$searchVideo(model.input)
-						};
-					case 'SearchNative':
-						return {
-							ctor: '_Tuple2',
-							_0: model,
-							_1: _user$project$Main$searchVideo('raise cain')
 						};
 					case 'SetPage':
 						if (_p6._0.ctor === 'Ok') {
@@ -16296,7 +16262,7 @@
 									_1: {ctor: '[]'}
 								});
 						} else {
-							break _v2_8;
+							break _v2_7;
 						}
 					case 'PopulateComments':
 						if (_p6._0.ctor === 'Ok') {
@@ -16349,7 +16315,7 @@
 								_1: {ctor: '[]'}
 							});
 					default:
-						break _v2_8;
+						break _v2_7;
 				}
 			} while(false);
 			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
@@ -16438,7 +16404,6 @@
 				},
 				videosRaw));
 	};
-	var _user$project$Main$SearchNative = {ctor: 'SearchNative'};
 	var _user$project$Main$Search = {ctor: 'Search'};
 	var _user$project$Main$Input = function (a) {
 		return {ctor: 'Input', _0: a};
