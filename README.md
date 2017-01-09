@@ -11,7 +11,7 @@ Uses hot-reloading for a better feedback loop, and elm-css so that the elm compi
 There are 2 versions available online as of now 
 
 [GitHub Pages](https://tyrantwarship.github.io/elmtube/)
-[Surge Page]
+[Surge Page] (http://lonely-place.surge.sh)
  
 ## I want to help develop it
 
