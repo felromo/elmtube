@@ -1,4 +1,4 @@
-port module Main exposing (..)
+module Main exposing (..)
 
 import Html exposing (div, ul, li, button, text, hr, iframe, h1, h3, h5, input, form, Attribute, img, p)
 import Html.Attributes exposing (src, type_, value)
@@ -120,7 +120,6 @@ init =
 type Msg
     = Input String
     | Search
-    | SearchNative
     | SelectVideo Video
     | LikeVideo
     | DislikeVideo
@@ -136,11 +135,7 @@ update msg model =
             { model | input = searchInput } ! []
 
         Search ->
-            -- ( model, searchQuery "raise cain" )
             ( { model | input = "" }, searchVideo model.input )
-
-        SearchNative ->
-            ( model, searchVideo "raise cain" )
 
         SetPage (Ok receivedPage) ->
             let
@@ -193,20 +188,6 @@ update msg model =
 
         _ ->
             ( model, Cmd.none )
-
-
-
--- port to send the search query to javascript
-
-
-port searchQuery : String -> Cmd msg
-
-
-
--- port to listen for the results of the query
-
-
-port searchResults : (List String -> msg) -> Sub msg
 
 
 
@@ -296,7 +277,6 @@ relatedVideoView video =
             []
         , h5 [] [ text video.details.title ]
         , div [ class [ MyCss.RelatedFooter ] ] []
-          -- , p [] [ text video.details.description ]
         ]
 
 
